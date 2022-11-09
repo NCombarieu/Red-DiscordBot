@@ -99,13 +99,22 @@ jobs:
           python-version: '3.8'
 
       # Version bump to development version
-      - name: Update Red version number to dev
+      - name: Get the version
         id: bump_version_dev
         run: |
           python .github/workflows/scripts/bump_version.py
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ env.PYTHONPATH }}
           DEV_BUMP: '1'
+
+      # Get the version
+      - name: Update Red version number to dev
+        id: bump_version_get
+        run: |
+          python .github/workflows/scripts/bump_version.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}:${{ env.PYTHONPATH }}
+          JUST_RETURN_VERSION: 0
 
       # Get milestone number of the milestone for the old version
       - name: Get milestone number
@@ -125,8 +134,8 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: Version bump to ${{ steps.bump_version_dev.outputs.new_version }}
-          title: Version bump to ${{ steps.bump_version_dev.outputs.new_version }}
+          commit-message: ${{ steps.bump_version_get.outputs.version }} Version bump to ${{ steps.bump_version_dev.outputs.new_version }}
+          title: ${{ steps.bump_version_get.outputs.version }} Version bump to ${{ steps.bump_version_dev.outputs.new_version }}
           body: |
             This is an automated PR.
             Please ensure that there are no errors or invalid files are in the PR.
