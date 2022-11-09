@@ -72,6 +72,11 @@ jobs:
     outputs:
       milestone_number: ${{ steps.get_milestone_number.outputs.result }}
     steps:
+      # Semantic -> https://github.com/marketplace/actions/git-semantic-version
+      - uses: PaulHatch/semantic-version@v5.0.0-beta
+        with: 
+          major_pattern: "(MAJOR)"
+
       # Checkout repository and install Python
       - uses: actions/checkout@v3
       - name: Set up Python
